@@ -136,6 +136,8 @@ function fullTimeStr() {
 function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
   const [subTab, setSubTab] = useState("train");
   const [activeDay, setActiveDay] = useState(0);
+  const [cardio, setCardio] = useState("");
+  const [isCardioDay, setIsCardioDay] = useState(false);
 
   const toggle = (exIdx, setIdx) => {
     setChecks(prev => {
@@ -190,9 +192,9 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
               {DAYS.map((d, i) => {
                 const ds = d.exercises.reduce((s, e) => s + e.sets, 0);
                 const dd = checks[i]?.flat().filter(Boolean).length ?? 0;
-                const active = activeDay === i;
+                const active = activeDay === i && !isCardioDay;
                 return (
-                  <button key={i} onClick={() => setActiveDay(i)} style={{
+                  <button key={i} onClick={() => { setActiveDay(i); setIsCardioDay(false); }} style={{
                     flex: 1, padding: "7px 4px", borderRadius: 8, border: "none",
                     background: active ? d.color : "#E8E8E8",
                     color: active ? "white" : "#616161",
@@ -203,7 +205,80 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
                   </button>
                 );
               })}
+              <button onClick={() => setIsCardioDay(true)} style={{
+                flex: 1, padding: "7px 4px", borderRadius: 8, border: "none",
+                background: isCardioDay ? "#1565C0" : "#E8E8E8",
+                color: isCardioDay ? "white" : "#616161",
+                fontWeight: isCardioDay ? 700 : 400, fontSize: 12, cursor: "pointer", transition: "all 0.2s",
+              }}>
+                🏃<br />
+                <span style={{ fontSize: 10, opacity: 0.8 }}>有氧</span>
+              </button>
             </div>
+
+            {isCardioDay ? (
+              <>
+                {/* 纯有氧日 */}
+                <div style={{ background: "#1565C0", borderRadius: "12px 12px 0 0", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <div style={{ fontSize: 17, fontWeight: 800, color: "white" }}>有氧训练</div>
+                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", marginTop: 2 }}>记录今日有氧内容</div>
+                  </div>
+                  {cardio.trim() && <div style={{ fontSize: 26, fontWeight: 900, color: "white" }}>100%</div>}
+                </div>
+                <div style={{ height: 3, background: "#E0E0E0", marginBottom: 10 }}>
+                  <div style={{ height: "100%", width: cardio.trim() ? "100%" : "0%", background: "#1565C0", transition: "width 0.4s" }} />
+                </div>
+
+                <div style={{ background: "white", borderRadius: 12, padding: "12px 13px", marginBottom: 8, border: "1px solid #E0E0E0" }}>
+                  <textarea
+                    value={cardio}
+                    onChange={e => setCardio(e.target.value.slice(0, 100))}
+                    placeholder="例：跑步30分钟、骑车45分钟、游泳1小时..."
+                    style={{
+                      width: "100%", minHeight: 80, padding: "9px 11px",
+                      borderRadius: 8, border: "1.5px solid #E0E0E0",
+                      fontSize: 12, color: "#1A1A1A", resize: "none",
+                      fontFamily: "inherit", lineHeight: 1.6, boxSizing: "border-box", outline: "none",
+                    }}
+                    onFocus={e => e.target.style.borderColor = "#1565C0"}
+                    onBlur={e => e.target.style.borderColor = "#E0E0E0"}
+                  />
+                  <div style={{ fontSize: 11, color: "#9E9E9E", marginTop: 4 }}>{cardio.length}/100字</div>
+                </div>
+
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button onClick={() => setCardio("")} style={{
+                    flex: 1, padding: "9px", background: "none",
+                    border: "1px solid #E0E0E0", borderRadius: 8, fontSize: 12, color: "#9E9E9E", cursor: "pointer",
+                  }}>清空</button>
+                  <button onClick={() => {
+                    if (!cardio.trim()) return;
+                    setFitnessLogs(prev => [{
+                      id: Date.now(),
+                      time: fullTimeStr(),
+                      day: "有氧",
+                      sub: cardio.trim(),
+                      color: "#1565C0",
+                      doneSets: 0,
+                      totalSets: 0,
+                      pct: 100,
+                      cardio: cardio.trim(),
+                      type: "有氧",
+                    }, ...prev]);
+                    setSubTab("log");
+                  }} style={{
+                    flex: 2, padding: "9px",
+                    background: cardio.trim() ? "#1565C0" : "#E0E0E0",
+                    border: "none", borderRadius: 8, fontSize: 12,
+                    color: cardio.trim() ? "white" : "#9E9E9E",
+                    cursor: cardio.trim() ? "pointer" : "not-allowed",
+                    fontWeight: 600, transition: "all 0.2s",
+                  }}>记录有氧训练 →</button>
+                </div>
+              </>
+            ) : (
+              <>
 
             {/* Day card */}
             <div style={{ background: day.color, borderRadius: "12px 12px 0 0", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -225,7 +300,7 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
                 checks={checks[activeDay][ei]} onToggle={(si) => toggle(ei, si)} />
             ))}
 
-            <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
               <button onClick={reset} style={{
                 flex: 1, padding: "9px", background: "none",
                 border: "1px solid #E0E0E0", borderRadius: 8, fontSize: 12, color: "#9E9E9E", cursor: "pointer",
@@ -241,12 +316,16 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
                   doneSets,
                   totalSets,
                   pct,
+                  cardio: "",
+                  type: "举铁",
                 }, ...prev]);
                 setSubTab("log");
               }} style={{
-                flex: 2, padding: "9px", background: doneSets > 0 ? day.color : "#E0E0E0",
+                flex: 2, padding: "9px",
+                background: doneSets > 0 ? day.color : "#E0E0E0",
                 border: "none", borderRadius: 8, fontSize: 12,
-                color: doneSets > 0 ? "white" : "#9E9E9E", cursor: doneSets > 0 ? "pointer" : "not-allowed",
+                color: doneSets > 0 ? "white" : "#9E9E9E",
+                cursor: doneSets > 0 ? "pointer" : "not-allowed",
                 fontWeight: 600, transition: "all 0.2s",
               }}>记录本次训练 →</button>
             </div>
@@ -263,8 +342,8 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
                 {Math.round((doneAll / totalAll) * 100)}%
               </div>
             </div>
-          </>
-        ) : (
+            </>
+            )}
           <>
             {fitnessLogs.length === 0 ? (
               <div style={{ textAlign: "center", padding: "50px 20px", color: "#9E9E9E" }}>
@@ -315,6 +394,11 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
                             <span style={{ color: "#9E9E9E", marginLeft: 2 }}>完成</span>
                           </div>
                         </div>
+                        {log.cardio && (
+                          <div style={{ fontSize: 11, color: "#1565C0", marginTop: 4 }}>
+                            🏃 {log.cardio}
+                          </div>
+                        )}
                       </div>
                       <button onClick={() => setFitnessLogs(prev => prev.filter(x => x.id !== log.id))} style={{
                         background: "none", border: "none", color: "#BDBDBD", cursor: "pointer", fontSize: 18, padding: "0 0 0 8px",
