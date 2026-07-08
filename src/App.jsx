@@ -497,13 +497,17 @@ function MealModule({ records, setRecords, fitnessLogs }) {
       const totalFat = records.reduce((s, r) => s + r.totalFat, 0);
       const totalCal = records.reduce((s, r) => s + r.totalCal, 0);
 
-      // 训练内容：从fitnessLogs取今天的记录
-      const trainingStr = fitnessLogs.length > 0
-        ? fitnessLogs.map(l => l.cardio ? `${l.day}${l.sub}+${l.cardio}` : `${l.day}${l.sub}`).join("、")
-        : "";
-      const typeStr = fitnessLogs.length > 0
-        ? [...new Set(fitnessLogs.map(l => l.type))].join("+")
-        : "";
+      // 训练内容：举铁在前，有氧在后
+      const liftingLogs = fitnessLogs.filter(l => l.type === "举铁");
+      const cardioLogs = fitnessLogs.filter(l => l.type === "有氧");
+      const trainingParts = [
+        ...liftingLogs.map(l => `${l.sub}`),
+        ...cardioLogs.map(l => l.cardio),
+      ].filter(Boolean);
+      const trainingStr = trainingParts.join("、");
+      const hasLifting = liftingLogs.length > 0;
+      const hasCardio = cardioLogs.length > 0;
+      const typeStr = hasLifting && hasCardio ? "举铁+有氧" : hasLifting ? "举铁" : hasCardio ? "有氧" : "";
 
       const params = new URLSearchParams({
         action: "sync",
