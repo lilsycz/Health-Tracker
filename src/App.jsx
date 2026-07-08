@@ -207,7 +207,7 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
               })}
               <button onClick={() => setIsCardioDay(true)} style={{
                 flex: 1, padding: "7px 4px", borderRadius: 8, border: "none",
-                background: isCardioDay ? "#1565C0" : "#E8E8E8",
+                background: isCardioDay ? "#FDD835" : "#E8E8E8",
                 color: isCardioDay ? "white" : "#616161",
                 fontWeight: isCardioDay ? 700 : 400, fontSize: 12, cursor: "pointer", transition: "all 0.2s",
               }}>
@@ -219,15 +219,15 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
             {isCardioDay ? (
               <>
                 {/* 纯有氧日 */}
-                <div style={{ background: "#1565C0", borderRadius: "12px 12px 0 0", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ background: "#FDD835", borderRadius: "12px 12px 0 0", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
-                    <div style={{ fontSize: 17, fontWeight: 800, color: "white" }}>有氧训练</div>
-                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", marginTop: 2 }}>记录今日有氧内容</div>
+                    <div style={{ fontSize: 17, fontWeight: 800, color: "#1A1A1A" }}>有氧训练</div>
+                    <div style={{ fontSize: 11, color: "#5D4037", marginTop: 2 }}>记录今日有氧内容</div>
                   </div>
-                  {cardio.trim() && <div style={{ fontSize: 26, fontWeight: 900, color: "white" }}>100%</div>}
+                  {cardio.trim() && <div style={{ fontSize: 26, fontWeight: 900, color: "#1A1A1A" }}>100%</div>}
                 </div>
                 <div style={{ height: 3, background: "#E0E0E0", marginBottom: 10 }}>
-                  <div style={{ height: "100%", width: cardio.trim() ? "100%" : "0%", background: "#1565C0", transition: "width 0.4s" }} />
+                  <div style={{ height: "100%", width: cardio.trim() ? "100%" : "0%", background: "#FDD835", transition: "width 0.4s" }} />
                 </div>
 
                 <div style={{ background: "white", borderRadius: 12, padding: "12px 13px", marginBottom: 8, border: "1px solid #E0E0E0" }}>
@@ -241,7 +241,7 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
                       fontSize: 12, color: "#1A1A1A", resize: "none",
                       fontFamily: "inherit", lineHeight: 1.6, boxSizing: "border-box", outline: "none",
                     }}
-                    onFocus={e => e.target.style.borderColor = "#1565C0"}
+                    onFocus={e => e.target.style.borderColor = "#FDD835"}
                     onBlur={e => e.target.style.borderColor = "#E0E0E0"}
                   />
                   <div style={{ fontSize: 11, color: "#9E9E9E", marginTop: 4 }}>{cardio.length}/100字</div>
@@ -259,7 +259,7 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
                       time: fullTimeStr(),
                       day: "有氧",
                       sub: cardio.trim(),
-                      color: "#1565C0",
+                      color: "#FDD835",
                       doneSets: 0,
                       totalSets: 0,
                       pct: 100,
@@ -269,9 +269,9 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
                     setSubTab("log");
                   }} style={{
                     flex: 2, padding: "9px",
-                    background: cardio.trim() ? "#1565C0" : "#E0E0E0",
+                    background: cardio.trim() ? "#FDD835" : "#E0E0E0",
                     border: "none", borderRadius: 8, fontSize: 12,
-                    color: cardio.trim() ? "white" : "#9E9E9E",
+                    color: cardio.trim() ? "#1A1A1A" : "#9E9E9E",
                     cursor: cardio.trim() ? "pointer" : "not-allowed",
                     fontWeight: 600, transition: "all 0.2s",
                   }}>记录有氧训练 →</button>
@@ -344,6 +344,8 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
             </div>
             </>
             )}
+          </>
+        ) : (
           <>
             {fitnessLogs.length === 0 ? (
               <div style={{ textAlign: "center", padding: "50px 20px", color: "#9E9E9E" }}>
