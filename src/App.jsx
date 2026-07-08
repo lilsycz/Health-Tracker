@@ -471,7 +471,7 @@ const BREAKFAST = {
   protein: 20, carb: 28, fat: 10, cal: 280,
 };
 
-function MealModule({ records, setRecords }) {
+function MealModule({ records, setRecords, fitnessLogs }) {
   const [subTab, setSubTab] = useState("plan");
   const [mealType, setMealType] = useState(null);
   const [selP, setSelP] = useState(null);
@@ -496,8 +496,14 @@ function MealModule({ records, setRecords }) {
       const totalCarb = records.reduce((s, r) => s + r.totalCarb, 0);
       const totalFat = records.reduce((s, r) => s + r.totalFat, 0);
       const totalCal = records.reduce((s, r) => s + r.totalCal, 0);
-      const trainingStr = records.map(r => r.mealType).join("、");
-      const typeStr = [...new Set(records.map(r => r.mealType))].join("+");
+
+      // 训练内容：从fitnessLogs取今天的记录
+      const trainingStr = fitnessLogs.length > 0
+        ? fitnessLogs.map(l => l.cardio ? `${l.day}${l.sub}+${l.cardio}` : `${l.day}${l.sub}`).join("、")
+        : "";
+      const typeStr = fitnessLogs.length > 0
+        ? [...new Set(fitnessLogs.map(l => l.type))].join("+")
+        : "";
 
       const params = new URLSearchParams({
         action: "sync",
@@ -1028,7 +1034,7 @@ export default function App() {
       <div style={{ flex: 1, overflowY: "auto", paddingBottom: 70 }}>
         {module === "fitness"
           ? <FitnessModule checks={checks} setChecks={setChecks} fitnessLogs={fitnessLogs} setFitnessLogs={setFitnessLogs} />
-          : <MealModule records={records} setRecords={setRecords} />
+          : <MealModule records={records} setRecords={setRecords} fitnessLogs={fitnessLogs} />
         }
       </div>
 
