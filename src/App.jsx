@@ -480,6 +480,49 @@ function MealModule({ records, setRecords }) {
   const [snackPP, setSnackPP] = useState(false);
   const [snackEggs, setSnackEggs] = useState(0);
   const [feeling, setFeeling] = useState("");
+  const [weight, setWeight] = useState("");
+  const [syncing, setSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState(null); // null | "success" | "error"
+
+  const WEBHOOK = "https://script.google.com/macros/s/AKfycbz5slNsZm5BkWSXniBsy97zkiNWC2k7tOqdDteXiOuldsnc2vfmjThjn64DPAF14QyB/exec";
+
+  const syncToSheet = async () => {
+    setSyncing(true);
+    setSyncStatus(null);
+    try {
+      const today = new Date();
+      const dateStr = `${today.getFullYear()}.${today.getMonth()+1}.${today.getDate()}`;
+      const totalProtein = records.reduce((s, r) => s + r.totalProtein, 0);
+      const totalCarb = records.reduce((s, r) => s + r.totalCarb, 0);
+      const totalFat = records.reduce((s, r) => s + r.totalFat, 0);
+      const totalCal = records.reduce((s, r) => s + r.totalCal, 0);
+      const trainingStr = records.map(r => r.mealType).join("、");
+      const typeStr = [...new Set(records.map(r => r.mealType))].join("+");
+
+      await fetch(WEBHOOK, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "sync",
+          date: dateStr,
+          training: trainingStr,
+          type: typeStr,
+          protein: totalProtein,
+          carb: totalCarb,
+          fat: totalFat,
+          cal: totalCal,
+          weight: weight || "",
+          feeling: feeling || "",
+        }),
+      });
+      setSyncStatus("success");
+    } catch (err) {
+      setSyncStatus("error");
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const isBreakfast = mealType === "早餐";
   const isSnack = mealType === "加餐";
@@ -844,6 +887,41 @@ function MealModule({ records, setRecords }) {
               }}>+ 记录下一餐</button>
             )}
 
+            {/* 今日体重 */}
+            <div style={{
+              marginTop: 16, background: "white", borderRadius: 12,
+              padding: "12px 13px", border: "1px solid #E0E0E0",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 16 }}>⚖️</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#1A1A1A" }}>今日体重</span>
+                <span style={{ fontSize: 11, color: "#9E9E9E" }}>选填</span>
+                {weight && (
+                  <span style={{
+                    fontSize: 10, fontWeight: 600, padding: "2px 7px", borderRadius: 20,
+                    background: "#E8F5E9", color: "#2E7D32",
+                  }}>已记录 ✓</span>
+                )}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <input
+                  type="number"
+                  value={weight}
+                  onChange={e => setWeight(e.target.value)}
+                  placeholder="例：95.5"
+                  min="30" max="300" step="0.1"
+                  style={{
+                    flex: 1, padding: "9px 11px", borderRadius: 8,
+                    border: "1.5px solid #E0E0E0", fontSize: 14,
+                    color: "#1A1A1A", outline: "none", boxSizing: "border-box",
+                  }}
+                  onFocus={e => e.target.style.borderColor = "#1A1A1A"}
+                  onBlur={e => e.target.style.borderColor = "#E0E0E0"}
+                />
+                <span style={{ fontSize: 13, color: "#757575", flexShrink: 0 }}>kg</span>
+              </div>
+            </div>
+
             {/* 今日体感 */}
             <div style={{
               marginTop: 16, background: "white", borderRadius: 12,
@@ -877,6 +955,28 @@ function MealModule({ records, setRecords }) {
                 {feeling.length}/200字
               </div>
             </div>
+
+            {/* 同步按钮 */}
+            <button
+              onClick={syncToSheet}
+              disabled={syncing || records.length === 0}
+              style={{
+                width: "100%", marginTop: 12, padding: "13px",
+                borderRadius: 11, border: "none",
+                background: syncing ? "#E0E0E0" : syncStatus === "success" ? "#2E7D32" : syncStatus === "error" ? "#C62828" : "#1A1A1A",
+                color: (syncing || records.length === 0) ? "#9E9E9E" : "white",
+                fontSize: 14, fontWeight: 700,
+                cursor: (syncing || records.length === 0) ? "not-allowed" : "pointer",
+                transition: "all 0.3s",
+              }}
+            >
+              {syncing ? "同步中..." : syncStatus === "success" ? "✓ 已同步到 Google Sheets" : syncStatus === "error" ? "✗ 同步失败，请重试" : "📊 同步今日记录"}
+            </button>
+            {syncStatus === "success" && (
+              <div style={{ fontSize: 11, color: "#9E9E9E", textAlign: "center", marginTop: 6 }}>
+                数据已写入 Google Sheets
+              </div>
+            )}
           </>
         )}
       </div>
