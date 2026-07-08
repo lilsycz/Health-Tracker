@@ -393,6 +393,7 @@ function MealModule({ records, setRecords }) {
   const [selV, setSelV] = useState([]);
   const [snackPP, setSnackPP] = useState(false);
   const [snackEggs, setSnackEggs] = useState(0);
+  const [feeling, setFeeling] = useState("");
 
   const isBreakfast = mealType === "早餐";
   const isSnack = mealType === "加餐";
@@ -756,6 +757,40 @@ function MealModule({ records, setRecords }) {
                 fontSize: 13, fontWeight: 600, color: "#1A1A1A", cursor: "pointer",
               }}>+ 记录下一餐</button>
             )}
+
+            {/* 今日体感 */}
+            <div style={{
+              marginTop: 16, background: "white", borderRadius: 12,
+              padding: "12px 13px", border: "1px solid #E0E0E0",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 16 }}>🌡</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#1A1A1A" }}>今日体感</span>
+                {feeling.trim() && (
+                  <span style={{
+                    fontSize: 10, fontWeight: 600, padding: "2px 7px", borderRadius: 20,
+                    background: "#E8F5E9", color: "#2E7D32",
+                  }}>已记录 ✓</span>
+                )}
+              </div>
+              <textarea
+                value={feeling}
+                onChange={e => setFeeling(e.target.value.slice(0, 200))}
+                placeholder="今天训练和饮食的整体感受、身体状态、特殊情况..."
+                style={{
+                  width: "100%", minHeight: 80, padding: "9px 11px",
+                  borderRadius: 8, border: "1.5px solid #E0E0E0",
+                  fontSize: 12, color: "#1A1A1A", resize: "vertical",
+                  fontFamily: "inherit", lineHeight: 1.6, boxSizing: "border-box",
+                  outline: "none",
+                }}
+                onFocus={e => e.target.style.borderColor = "#1A1A1A"}
+                onBlur={e => e.target.style.borderColor = "#E0E0E0"}
+              />
+              <div style={{ fontSize: 11, color: "#9E9E9E", marginTop: 6 }}>
+                {feeling.length}/200字
+              </div>
+            </div>
           </>
         )}
       </div>
