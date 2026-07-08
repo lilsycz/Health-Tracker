@@ -484,7 +484,7 @@ function MealModule({ records, setRecords }) {
   const [syncing, setSyncing] = useState(false);
   const [syncStatus, setSyncStatus] = useState(null); // null | "success" | "error"
 
-  const WEBHOOK = "https://script.google.com/macros/s/AKfycbz5slNsZm5BkWSXniBsy97zkiNWC2k7tOqdDteXiOuldsnc2vfmjThjn64DPAF14QyB/exec";
+  const WEBHOOK = "https://script.google.com/macros/s/AKfycbzTisAbO30mHPBnaJsGQorG6k1wwH5MATpgnsYnRFzZ_60MOtq1C6K0pFwIUF7UkOvj/exec";
 
   const syncToSheet = async () => {
     setSyncing(true);
@@ -499,24 +499,22 @@ function MealModule({ records, setRecords }) {
       const trainingStr = records.map(r => r.mealType).join("、");
       const typeStr = [...new Set(records.map(r => r.mealType))].join("+");
 
-      await fetch(WEBHOOK, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "sync",
-          date: dateStr,
-          training: trainingStr,
-          type: typeStr,
-          protein: totalProtein,
-          carb: totalCarb,
-          fat: totalFat,
-          cal: totalCal,
-          weight: weight || "",
-          feeling: feeling || "",
-        }),
+      const params = new URLSearchParams({
+        action: "sync",
+        date: dateStr,
+        training: trainingStr,
+        type: typeStr,
+        protein: totalProtein,
+        carb: totalCarb,
+        fat: totalFat,
+        cal: totalCal,
+        weight: weight || "",
+        feeling: feeling || "",
       });
-      setSyncStatus("success");
+
+      const res = await fetch(`${WEBHOOK}?${params.toString()}`);
+      const json = await res.json();
+      setSyncStatus(json.success ? "success" : "error");
     } catch (err) {
       setSyncStatus("error");
     } finally {
