@@ -991,10 +991,10 @@ function MealModule({ records, setRecords, fitnessLogs }) {
                 max={new Date().toISOString().split("T")[0]}
                 onChange={e => { setSyncDate(e.target.value); setSyncStatus(null); }}
                 style={{
-                  width: "calc(100% - 4px)", padding: "9px 11px", borderRadius: 8,
+                  width: "100%", padding: "9px 8px 9px 11px", borderRadius: 8,
                   border: "1.5px solid #E0E0E0", fontSize: 14,
                   color: "#1A1A1A", outline: "none", boxSizing: "border-box",
-                  display: "block",
+                  display: "block", appearance: "none", WebkitAppearance: "none",
                 }}
                 onFocus={e => e.target.style.borderColor = "#1A1A1A"}
                 onBlur={e => e.target.style.borderColor = "#E0E0E0"}
