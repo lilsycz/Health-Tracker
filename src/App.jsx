@@ -486,8 +486,8 @@ function MealModule({ records, setRecords, fitnessLogs }) {
     try { return localStorage.getItem("ht_weight") || ""; } catch { return ""; }
   });
 
-  useEffect(() => { localStorage.setItem("ht_feeling", feeling); }, [feeling]);
-  useEffect(() => { localStorage.setItem("ht_weight", weight); }, [weight]);
+  useEffect(() => { try { localStorage.setItem("ht_feeling", feeling); } catch {} }, [feeling]);
+  useEffect(() => { try { localStorage.setItem("ht_weight", weight); } catch {} }, [weight]);
   const [syncing, setSyncing] = useState(false);
   const [syncStatus, setSyncStatus] = useState(null);
   const [syncDate, setSyncDate] = useState(() => {
@@ -1062,11 +1062,11 @@ export default function App() {
   });
 
   useEffect(() => {
-    localStorage.setItem("ht_records", JSON.stringify(records));
+    try { localStorage.setItem("ht_records", JSON.stringify(records)); } catch {}
   }, [records]);
 
   useEffect(() => {
-    localStorage.setItem("ht_fitlogs", JSON.stringify(fitnessLogs));
+    try { localStorage.setItem("ht_fitlogs", JSON.stringify(fitnessLogs)); } catch {}
   }, [fitnessLogs]);
 
   const doneAll = checks.flat(2).filter(Boolean).length;
