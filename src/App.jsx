@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // ─── DATA ────────────────────────────────────────────────────────
 const DAYS = [
@@ -479,10 +479,21 @@ function MealModule({ records, setRecords, fitnessLogs }) {
   const [selV, setSelV] = useState([]);
   const [snackPP, setSnackPP] = useState(false);
   const [snackEggs, setSnackEggs] = useState(0);
-  const [feeling, setFeeling] = useState("");
-  const [weight, setWeight] = useState("");
+  const [feeling, setFeeling] = useState(() => {
+    try { return localStorage.getItem("ht_feeling") || ""; } catch { return ""; }
+  });
+  const [weight, setWeight] = useState(() => {
+    try { return localStorage.getItem("ht_weight") || ""; } catch { return ""; }
+  });
+
+  useEffect(() => { localStorage.setItem("ht_feeling", feeling); }, [feeling]);
+  useEffect(() => { localStorage.setItem("ht_weight", weight); }, [weight]);
   const [syncing, setSyncing] = useState(false);
-  const [syncStatus, setSyncStatus] = useState(null); // null | "success" | "error"
+  const [syncStatus, setSyncStatus] = useState(null);
+  const [syncDate, setSyncDate] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  }); // null | "success" | "error"
 
   const WEBHOOK = "https://script.google.com/macros/s/AKfycbzTisAbO30mHPBnaJsGQorG6k1wwH5MATpgnsYnRFzZ_60MOtq1C6K0pFwIUF7UkOvj/exec";
 
@@ -490,8 +501,8 @@ function MealModule({ records, setRecords, fitnessLogs }) {
     setSyncing(true);
     setSyncStatus(null);
     try {
-      const today = new Date();
-      const dateStr = `${today.getFullYear()}.${today.getMonth()+1}.${today.getDate()}`;
+      const [year, month, day] = syncDate.split("-");
+      const dateStr = `${year}.${Number(month)}.${Number(day)}`;
       const totalProtein = records.reduce((s, r) => s + r.totalProtein, 0);
       const totalCarb = records.reduce((s, r) => s + r.totalCarb, 0);
       const totalFat = records.reduce((s, r) => s + r.totalFat, 0);
@@ -964,6 +975,32 @@ function MealModule({ records, setRecords, fitnessLogs }) {
               </div>
             </div>
 
+            {/* 同步日期选择 */}
+            <div style={{
+              marginTop: 16, background: "white", borderRadius: 12,
+              padding: "12px 13px", border: "1px solid #E0E0E0",
+              overflow: "hidden",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 16 }}>📅</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#1A1A1A" }}>同步日期</span>
+              </div>
+              <input
+                type="date"
+                value={syncDate}
+                max={new Date().toISOString().split("T")[0]}
+                onChange={e => { setSyncDate(e.target.value); setSyncStatus(null); }}
+                style={{
+                  width: "calc(100% - 4px)", padding: "9px 11px", borderRadius: 8,
+                  border: "1.5px solid #E0E0E0", fontSize: 14,
+                  color: "#1A1A1A", outline: "none", boxSizing: "border-box",
+                  display: "block",
+                }}
+                onFocus={e => e.target.style.borderColor = "#1A1A1A"}
+                onBlur={e => e.target.style.borderColor = "#E0E0E0"}
+              />
+            </div>
+
             {/* 同步按钮 */}
             <button
               onClick={syncToSheet}
@@ -978,7 +1015,7 @@ function MealModule({ records, setRecords, fitnessLogs }) {
                 transition: "all 0.3s",
               }}
             >
-              {syncing ? "同步中..." : syncStatus === "success" ? "✓ 已同步到 Google Sheets" : syncStatus === "error" ? "✗ 同步失败，请重试" : "📊 同步今日记录"}
+              {syncing ? "同步中..." : syncStatus === "success" ? "✓ 已同步到 Google Sheets" : syncStatus === "error" ? "✗ 同步失败，请重试" : `📊 同步 ${syncDate} 的记录`}
             </button>
             {syncStatus === "success" && (
               <div style={{ fontSize: 11, color: "#9E9E9E", textAlign: "center", marginTop: 6 }}>
@@ -1017,8 +1054,20 @@ function initChecks() {
 export default function App() {
   const [module, setModule] = useState("fitness");
   const [checks, setChecks] = useState(initChecks);
-  const [records, setRecords] = useState([]);
-  const [fitnessLogs, setFitnessLogs] = useState([]);
+  const [records, setRecords] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("ht_records")) || []; } catch { return []; }
+  });
+  const [fitnessLogs, setFitnessLogs] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("ht_fitlogs")) || []; } catch { return []; }
+  });
+
+  useEffect(() => {
+    localStorage.setItem("ht_records", JSON.stringify(records));
+  }, [records]);
+
+  useEffect(() => {
+    localStorage.setItem("ht_fitlogs", JSON.stringify(fitnessLogs));
+  }, [fitnessLogs]);
 
   const doneAll = checks.flat(2).filter(Boolean).length;
   const totalAll = checks.flat(2).length;
