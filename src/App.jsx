@@ -479,7 +479,6 @@ function MealModule({ records, setRecords, fitnessLogs }) {
   const [selV, setSelV] = useState([]);
   const [snackPP, setSnackPP] = useState(false);
   const [snackEggs, setSnackEggs] = useState(0);
-  const [snackExtra, setSnackExtra] = useState(0);
   const [feeling, setFeeling] = useState(() => {
     try { return localStorage.getItem("ht_feeling") || ""; } catch { return ""; }
   });
@@ -547,7 +546,7 @@ function MealModule({ records, setRecords, fitnessLogs }) {
   const isBreakfast = mealType === "早餐";
   const isSnack = mealType === "加餐";
   const canSave = isBreakfast ? true
-    : isSnack ? (snackPP || snackEggs > 0 || snackExtra > 0)
+    : isSnack ? (snackPP || snackEggs > 0)
     : (mealType && selP && selC);
 
   const save = () => {
@@ -570,7 +569,7 @@ function MealModule({ records, setRecords, fitnessLogs }) {
       const eggProtein = snackEggs * 6;
       const eggCal = snackEggs * 80;
       const eggFat = snackEggs * 5;
-      const items = [snackPP ? "蛋白粉44g" : null, snackEggs > 0 ? `鸡蛋${snackEggs}个` : null, snackExtra > 0 ? `额外${snackExtra}kcal` : null].filter(Boolean).join(" + ");
+      const items = [snackPP ? "蛋白粉44g" : null, snackEggs > 0 ? `鸡蛋${snackEggs}个` : null].filter(Boolean).join(" + ");
       setRecords(prev => [{
         id: Date.now(), time: fullTimeStr(), mealType: "加餐",
         protein: items,
@@ -579,7 +578,7 @@ function MealModule({ records, setRecords, fitnessLogs }) {
         totalProtein: ppProtein + eggProtein,
         totalCarb: 0,
         totalFat: eggFat,
-        totalCal: ppCal + eggCal + snackExtra,
+        totalCal: ppCal + eggCal,
         isSnack: true,
       }, ...prev]);
     } else {
@@ -595,7 +594,7 @@ function MealModule({ records, setRecords, fitnessLogs }) {
       }, ...prev]);
     }
     setMealType(null); setSelP(null); setSelC(null); setSelV([]);
-    setSnackPP(false); setSnackEggs(0); setSnackExtra(0);
+    setSnackPP(false); setSnackEggs(0);
     setSubTab("record");
   };
 
@@ -649,7 +648,7 @@ function MealModule({ records, setRecords, fitnessLogs }) {
             {/* Snack card */}
             {isSnack && (
               <div style={{ background: "white", borderRadius: 12, padding: "12px 13px", marginBottom: 10 }}>
-                <SectionTitle emoji="💪" label="加餐（可多选）" color="#00838F" done={snackPP || snackEggs > 0 || snackExtra > 0} />
+                <SectionTitle emoji="💪" label="加餐（可多选）" color="#00838F" done={snackPP || snackEggs > 0} />
 
                 {/* Protein powder */}
                 <button onClick={() => setSnackPP(p => !p)} style={{
@@ -696,42 +695,12 @@ function MealModule({ records, setRecords, fitnessLogs }) {
                   </div>
                 </div>
 
-                {/* Extra calories */}
-                <div style={{
-                  display: "flex", alignItems: "center", justifyContent: "space-between",
-                  padding: "9px 12px", marginTop: 8, borderRadius: 10,
-                  border: `1.5px solid ${snackExtra > 0 ? "#00838F" : "#E0E0E0"}`,
-                  background: snackExtra > 0 ? "#E0F7FA" : "white",
-                }}>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "#1A1A1A" }}>额外热量</div>
-                    <div style={{ fontSize: 11, color: "#9E9E9E" }}>外食或其他食物</div>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <input
-                      type="number"
-                      value={snackExtra || ""}
-                      onChange={e => setSnackExtra(Math.max(0, Number(e.target.value)))}
-                      placeholder="0"
-                      min="0"
-                      max="2000"
-                      style={{
-                        width: 70, padding: "6px 8px", borderRadius: 6,
-                        border: "1.5px solid #E0E0E0", fontSize: 14,
-                        color: "#1A1A1A", outline: "none", textAlign: "right",
-                        boxSizing: "border-box",
-                      }}
-                    />
-                    <span style={{ fontSize: 12, color: "#757575" }}>kcal</span>
-                  </div>
-                </div>
-
                 {/* Snack summary */}
-                {(snackPP || snackEggs > 0 || snackExtra > 0) && (
+                {(snackPP || snackEggs > 0) && (
                   <div style={{ marginTop: 10, padding: "8px 12px", borderRadius: 8, background: "#F5F5F5", display: "flex", gap: 12 }}>
                     {[
                       { label: "蛋白质", value: `${(snackPP ? 26 : 0) + snackEggs * 6}g`, color: "#2E7D32" },
-                      { label: "热量", value: `${(snackPP ? 170 : 0) + snackEggs * 80 + snackExtra}kcal`, color: "#757575" },
+                      { label: "热量", value: `${(snackPP ? 170 : 0) + snackEggs * 80}kcal`, color: "#757575" },
                     ].map(n => (
                       <div key={n.label} style={{ fontSize: 11 }}>
                         <span style={{ color: n.color, fontWeight: 700 }}>{n.value}</span>
