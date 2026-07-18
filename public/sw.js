@@ -1,4 +1,4 @@
-const CACHE_NAME = "health-tracker-v2";
+const CACHE_NAME = "health-tracker-v3";
 const urlsToCache = ["/health-tracker/", "/health-tracker/index.html"];
 
 self.addEventListener("install", e => {
