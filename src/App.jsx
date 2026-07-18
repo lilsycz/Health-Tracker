@@ -7,8 +7,8 @@ const DAYS = [
     exercises: [
       { name: "死虫式 Dead Bug", type: "核心", sets: 3, reps: "10次/边", weight: "自重", note: "腰部全程贴地" },
       { name: "保加利亚单腿蹲", type: "主项", sets: 4, reps: "8–10次", weight: "10–14kg/边", note: "核心收紧，膝盖对脚尖" },
-      { name: "臀推", type: "主项", sets: 4, reps: "10–12次", weight: "60–70kg", note: "顶部停顿1秒" },
-      { name: "单腿硬拉", type: "辅项", sets: 3, reps: "10次/边", weight: "10–12kg/边", note: "脊椎中立，不弯腰" },
+      { name: "单腿硬拉", type: "主项", sets: 4, reps: "10次/边", weight: "10–14kg/边", note: "脊椎中立，不弯腰" },
+      { name: "绳索后踢腿", type: "辅项", sets: 3, reps: "12–15次/边", weight: "轻重量", note: "臀部主动发力，不借腰" },
     ],
   },
   {
@@ -38,28 +38,33 @@ const TYPE_STYLE = {
   辅项: { bg: "#FFF3E0", color: "#E65100" },
 };
 
-const PROTEINS = [
-  { id: "p1", name: "三文鱼", amount: "200g", protein: 40, fat: 26, carb: 0, cal: 416 },
-  { id: "p2", name: "金枪鱼 + 1个蛋", amount: "150g + 1蛋", protein: 43, fat: 8, carb: 0, cal: 252 },
-  { id: "p3", name: "虾", amount: "200g", protein: 40, fat: 2, carb: 0, cal: 176 },
-  { id: "p4", name: "鳕鱼", amount: "200g", protein: 40, fat: 2, carb: 0, cal: 176 },
-  { id: "p5", name: "三文鱼 + 3个蛋", amount: "100g + 3蛋", protein: 38, fat: 28, carb: 0, cal: 392 },
-  { id: "p6", name: "豆腐 + 3个蛋", amount: "200g + 3蛋", protein: 34, fat: 16, carb: 3, cal: 256 },
+// 每100g的营养数据
+const FOODS = [
+  // 蛋白质类
+  { id: "f1", name: "三文鱼", category: "蛋白质", protein: 20, fat: 13, carb: 0, cal: 208 },
+  { id: "f2", name: "金枪鱼", category: "蛋白质", protein: 25, fat: 1, carb: 0, cal: 109 },
+  { id: "f3", name: "虾", category: "蛋白质", protein: 20, fat: 1, carb: 0, cal: 89 },
+  { id: "f4", name: "鳕鱼", category: "蛋白质", protein: 20, fat: 1, carb: 0, cal: 89 },
+  { id: "f5", name: "鸡胸肉", category: "蛋白质", protein: 31, fat: 3.6, carb: 0, cal: 165 },
+  { id: "f6", name: "鸡腿肉", category: "蛋白质", protein: 20, fat: 9, carb: 0, cal: 170 },
+  { id: "f7", name: "牛肉", category: "蛋白质", protein: 26, fat: 15, carb: 0, cal: 250 },
+  { id: "f8", name: "鸡蛋", category: "蛋白质", protein: 8, fat: 6, carb: 0.6, cal: 86, perEgg: true },
+  { id: "f9", name: "豆腐", category: "蛋白质", protein: 8, fat: 4, carb: 2, cal: 76 },
+  // 碳水类
+  { id: "c1", name: "土豆", category: "碳水", protein: 2, fat: 0, carb: 17, cal: 77 },
+  { id: "c2", name: "藜麦饭", category: "碳水", protein: 2.5, fat: 0.8, carb: 24, cal: 113 },
+  { id: "c3", name: "杂粮饭", category: "碳水", protein: 2.5, fat: 0.5, carb: 25, cal: 116 },
+  { id: "c4", name: "意面", category: "碳水", protein: 5, fat: 1, carb: 25, cal: 131 },
+  // 蔬菜类
+  { id: "v1", name: "混合蔬菜", category: "蔬菜", protein: 2, fat: 0, carb: 5, cal: 30 },
+  { id: "v2", name: "西兰花", category: "蔬菜", protein: 2.8, fat: 0.4, carb: 7, cal: 34 },
+  // 油脂（按勺，1勺=10g）
+  { id: "o1", name: "椰子油", category: "油脂", protein: 0, fat: 10, carb: 0, cal: 89, perSpoon: true },
+  { id: "o2", name: "橄榄油", category: "油脂", protein: 0, fat: 10, carb: 0, cal: 88, perSpoon: true },
+  { id: "o3", name: "核桃", category: "油脂", protein: 15, fat: 65, carb: 14, cal: 654 },
 ];
 
-const CARBS = [
-  { id: "c1", name: "土豆", amount: "280–300g", protein: 5, fat: 0, carb: 60, cal: 260 },
-  { id: "c2", name: "藜麦饭", amount: "220–240g", protein: 6, fat: 2, carb: 60, cal: 282 },
-  { id: "c3", name: "杂粮饭", amount: "180–200g", protein: 5, fat: 1, carb: 60, cal: 268 },
-];
-
-const VEGS = [
-  { id: "v1", name: "混合蔬菜" },
-  { id: "v2", name: "番茄" },
-  { id: "v3", name: "玉米" },
-  { id: "v4", name: "豌豆" },
-];
-
+const FOOD_CATEGORIES = ["蛋白质", "碳水", "蔬菜", "油脂"];
 const OIL = { fat: 14, cal: 120 };
 
 // ─── SHARED COMPONENTS ───────────────────────────────────────────
@@ -167,17 +172,17 @@ function FitnessModule({ checks, setChecks, fitnessLogs, setFitnessLogs }) {
       {/* Sticky header */}
       <div style={{ background: "#1A1A1A", padding: "16px 16px 0", position: "sticky", top: 0, zIndex: 5 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 2 }}>
-          <div style={{ fontSize: 11, color: "#616161", letterSpacing: 2 }}>稳定期 6–8周</div>
+          <div style={{ fontSize: 11, color: "#FF6D00", letterSpacing: 2 }}>稳定期 6–8周</div>
           <div style={{ fontSize: 11, color: "#616161" }}>{todayStr()}</div>
         </div>
-        <div style={{ fontSize: 18, fontWeight: 800, color: "white", marginBottom: 12 }}>训练追踪</div>
+        <div style={{ fontSize: 18, fontWeight: 800, color: "#FF6D00", marginBottom: 12 }}>训练追踪</div>
         <div style={{ display: "flex" }}>
           {[["train", "今日训练"], ["log", `训练记录${fitnessLogs.length > 0 ? ` (${fitnessLogs.length})` : ""}`]].map(([t, label]) => (
             <button key={t} onClick={() => setSubTab(t)} style={{
               flex: 1, padding: "9px", border: "none", background: "none",
-              color: subTab === t ? "white" : "#616161",
+              color: subTab === t ? "#FF6D00" : "#616161",
               fontWeight: subTab === t ? 700 : 400, fontSize: 13, cursor: "pointer",
-              borderBottom: subTab === t ? "2px solid white" : "2px solid transparent",
+              borderBottom: subTab === t ? "2px solid #FF6D00" : "2px solid transparent",
               transition: "all 0.2s",
             }}>{label}</button>
           ))}
@@ -474,9 +479,7 @@ const BREAKFAST = {
 function MealModule({ records, setRecords, fitnessLogs }) {
   const [subTab, setSubTab] = useState("plan");
   const [mealType, setMealType] = useState(null);
-  const [selP, setSelP] = useState(null);
-  const [selC, setSelC] = useState(null);
-  const [selV, setSelV] = useState([]);
+  const [foodGrams, setFoodGrams] = useState({}); // { foodId: grams }
   const [snackPP, setSnackPP] = useState(false);
   const [snackEggs, setSnackEggs] = useState(0);
   const [snackExtra, setSnackExtra] = useState(0);
@@ -546,9 +549,32 @@ function MealModule({ records, setRecords, fitnessLogs }) {
 
   const isBreakfast = mealType === "早餐";
   const isSnack = mealType === "加餐";
+  const hasFood = Object.values(foodGrams).some(g => g > 0);
+
+  // Calculate nutrition from selected foods
+  const calcNutrition = () => {
+    let protein = 0, fat = 0, carb = 0, cal = 0;
+    FOODS.forEach(food => {
+      const g = Number(foodGrams[food.id] || 0);
+      if (g > 0) {
+        const mult = food.perEgg || food.perSpoon ? g : g / 100;
+        protein += food.protein * mult;
+        fat += food.fat * mult;
+        carb += food.carb * mult;
+        cal += food.cal * mult;
+      }
+    });
+    return {
+      protein: Math.round(protein),
+      fat: Math.round(fat),
+      carb: Math.round(carb),
+      cal: Math.round(cal),
+    };
+  };
+
   const canSave = isBreakfast ? true
     : isSnack ? (snackPP || snackEggs > 0 || snackExtra > 0)
-    : (mealType && selP && selC);
+    : (mealType && hasFood);
 
   const save = () => {
     if (!canSave) return;
@@ -583,18 +609,23 @@ function MealModule({ records, setRecords, fitnessLogs }) {
         isSnack: true,
       }, ...prev]);
     } else {
+      const nutrition = calcNutrition();
+      const items = FOODS
+        .filter(f => Number(foodGrams[f.id] || 0) > 0)
+        .map(f => `${f.name}${foodGrams[f.id]}g`)
+        .join("、");
       setRecords(prev => [{
         id: Date.now(), time: fullTimeStr(), mealType,
-        protein: `${selP.name} ${selP.amount}`,
-        carb: `${selC.name} ${selC.amount}`,
-        vegs: selV.length > 0 ? selV.map(v => v.name).join("、") : null,
-        totalProtein: (selP.protein || 0) + (selC.protein || 0),
-        totalCarb: (selP.carb || 0) + (selC.carb || 0),
-        totalFat: (selP.fat || 0) + OIL.fat,
-        totalCal: (selP.cal || 0) + (selC.cal || 0) + OIL.cal,
+        protein: items,
+        carb: "",
+        vegs: null,
+        totalProtein: nutrition.protein,
+        totalCarb: nutrition.carb,
+        totalFat: nutrition.fat,
+        totalCal: nutrition.cal,
       }, ...prev]);
     }
-    setMealType(null); setSelP(null); setSelC(null); setSelV([]);
+    setMealType(null); setFoodGrams({});
     setSnackPP(false); setSnackEggs(0); setSnackExtra(0);
     setSubTab("record");
   };
@@ -610,17 +641,17 @@ function MealModule({ records, setRecords, fitnessLogs }) {
         position: "sticky", top: 0, zIndex: 5,
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 2 }}>
-          <div style={{ fontSize: 11, color: "#616161", letterSpacing: 2 }}>减脂保肌</div>
+          <div style={{ fontSize: 11, color: "#69F0AE", letterSpacing: 2 }}>减脂保肌</div>
           <div style={{ fontSize: 11, color: "#616161" }}>{todayStr()}</div>
         </div>
-        <div style={{ fontSize: 18, fontWeight: 800, color: "white", marginBottom: 12 }}>饮食追踪</div>
+        <div style={{ fontSize: 18, fontWeight: 800, color: "#69F0AE", marginBottom: 12 }}>饮食追踪</div>
         <div style={{ display: "flex" }}>
           {[["plan", "搭配餐食"], ["record", `饮食记录${records.length > 0 ? ` (${records.length})` : ""}`]].map(([t, label]) => (
             <button key={t} onClick={() => setSubTab(t)} style={{
               flex: 1, padding: "9px", border: "none", background: "none",
-              color: subTab === t ? "white" : "#616161",
+              color: subTab === t ? "#69F0AE" : "#616161",
               fontWeight: subTab === t ? 700 : 400, fontSize: 13, cursor: "pointer",
-              borderBottom: subTab === t ? "2px solid white" : "2px solid transparent",
+              borderBottom: subTab === t ? "2px solid #69F0AE" : "2px solid transparent",
               transition: "all 0.2s",
             }}>{label}</button>
           ))}
@@ -635,7 +666,7 @@ function MealModule({ records, setRecords, fitnessLogs }) {
               <SectionTitle emoji="🕐" label="选择餐次" color="#6A1B9A" done={!!mealType} />
               <div style={{ display: "flex", gap: 6 }}>
                 {["早餐", "午餐", "晚餐", "加餐"].map(m => (
-                  <button key={m} onClick={() => { setMealType(m); setSelP(null); setSelC(null); setSelV([]); setSnackPP(false); setSnackEggs(0); }} style={{
+                  <button key={m} onClick={() => { setMealType(m); setFoodGrams({}); setSnackPP(false); setSnackEggs(0); setSnackExtra(0); }} style={{
                     flex: 1, padding: "8px 4px", borderRadius: 9,
                     border: `1.5px solid ${mealType === m ? "#6A1B9A" : "#E0E0E0"}`,
                     background: mealType === m ? "#F3E5F5" : "white",
@@ -779,68 +810,91 @@ function MealModule({ records, setRecords, fitnessLogs }) {
               </div>
             )}
 
-            {/* Protein / Carb / Veg — only for lunch and dinner */}
+            {/* 食材列表 — 午餐/晚餐 */}
             {!isBreakfast && !isSnack && (<>
-            {/* Protein */}
-            <div style={{ background: "white", borderRadius: 12, padding: "12px 13px", marginBottom: 10 }}>
-              <SectionTitle emoji="🥩" label="蛋白质（选一种）" color="#2E7D32" done={!!selP} />
-              {PROTEINS.map(p => (
-                <CheckItem key={p.id} item={p} selected={selP?.id === p.id}
-                  onToggle={() => setSelP(selP?.id === p.id ? null : p)} color="#2E7D32" />
-              ))}
-            </div>
-
-            {/* Carb */}
-            <div style={{ background: "white", borderRadius: 12, padding: "12px 13px", marginBottom: 10 }}>
-              <SectionTitle emoji="🍚" label="碳水（选一种）" color="#1565C0" done={!!selC} />
-              {CARBS.map(c => (
-                <CheckItem key={c.id} item={c} selected={selC?.id === c.id}
-                  onToggle={() => setSelC(selC?.id === c.id ? null : c)} color="#1565C0" />
-              ))}
-            </div>
-
-            {/* Veg */}
-            <div style={{ background: "white", borderRadius: 12, padding: "12px 13px", marginBottom: 10 }}>
-              <SectionTitle emoji="🥦" label="蔬菜（可多选，不限量）" color="#558B2F" done={selV.length > 0} />
-              {VEGS.map(v => (
-                <CheckItem key={v.id} item={{ ...v, amount: v.id === "v2" ? "少量" : "随意" }}
-                  selected={selV.some(s => s.id === v.id)}
-                  onToggle={() => setSelV(prev => prev.some(s => s.id === v.id) ? prev.filter(s => s.id !== v.id) : [...prev, v])}
-                  color="#558B2F" multi />
-              ))}
-              <div style={{ padding: "9px 12px", borderRadius: 10, background: "#F9FBE7", border: "1.5px solid #E0E0E0", fontSize: 12, color: "#757575" }}>
-                🫙 椰子油 1汤匙（已固定）
-              </div>
-            </div>
-
-            {/* Summary */}
-            {canSave && !isBreakfast && !isSnack && selP && selC && (
-              <div style={{
-                background: "linear-gradient(135deg, #1A1A1A, #2D2D2D)",
-                borderRadius: 13, padding: "14px", marginBottom: 12, color: "white",
-              }}>
-                <div style={{ fontSize: 12, color: "#757575", marginBottom: 10 }}>本餐营养汇总</div>
-                <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-                  {[
-                    { label: "蛋白质", value: `${(selP.protein||0)+(selC.protein||0)}g`, color: "#81C784" },
-                    { label: "碳水", value: `${(selP.carb||0)+(selC.carb||0)}g`, color: "#64B5F6" },
-                    { label: "脂肪", value: `${(selP.fat||0)+OIL.fat}g`, color: "#FFB74D" },
-                    { label: "热量", value: `${(selP.cal||0)+(selC.cal||0)+OIL.cal}`, color: "#F48FB1" },
-                  ].map(n => (
-                    <div key={n.label} style={{ flex: 1, textAlign: "center" }}>
-                      <div style={{ fontSize: 16, fontWeight: 800, color: n.color }}>{n.value}</div>
-                      <div style={{ fontSize: 10, color: "#616161", marginTop: 2 }}>{n.label}</div>
-                    </div>
-                  ))}
+            {FOOD_CATEGORIES.map(cat => {
+              const catEmoji = cat === "蛋白质" ? "🥩" : cat === "碳水" ? "🍚" : cat === "蔬菜" ? "🥦" : "🫙";
+              const catColor = cat === "蛋白质" ? "#2E7D32" : cat === "碳水" ? "#1565C0" : cat === "蔬菜" ? "#558B2F" : "#795548";
+              const catFoods = FOODS.filter(f => f.category === cat);
+              const catHasValue = catFoods.some(f => Number(foodGrams[f.id] || 0) > 0);
+              return (
+                <div key={cat} style={{ background: "white", borderRadius: 12, padding: "12px 13px", marginBottom: 10 }}>
+                  <SectionTitle emoji={catEmoji} label={cat} color={catColor} done={catHasValue} />
+                  {catFoods.map(food => {
+                    const g = Number(foodGrams[food.id] || 0);
+                    const active = g > 0;
+                    const unit = food.perEgg ? "个" : food.perSpoon ? "勺" : "g";
+                    const calcP = food.perEgg || food.perSpoon ? food.protein * g : food.protein * g / 100;
+                    const calcC = food.perEgg || food.perSpoon ? food.carb * g : food.carb * g / 100;
+                    const calcCal = food.perEgg || food.perSpoon ? food.cal * g : food.cal * g / 100;
+                    return (
+                      <div key={food.id} style={{
+                        display: "flex", alignItems: "center", justifyContent: "space-between",
+                        padding: "8px 10px", marginBottom: 6, borderRadius: 9,
+                        border: `1.5px solid ${active ? catColor : "#E0E0E0"}`,
+                        background: active ? `${catColor}10` : "white",
+                      }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#1A1A1A" }}>{food.name}</div>
+                          <div style={{ fontSize: 10, color: "#9E9E9E" }}>
+                            {food.perEgg ? `每个 · 蛋白${food.protein}g · ${food.cal}kcal`
+                             : food.perSpoon ? `每勺(10g) · 脂肪${food.fat}g · ${food.cal}kcal`
+                             : `每100g · 蛋白${food.protein}g · 碳水${food.carb}g · ${food.cal}kcal`}
+                          </div>
+                          {active && (
+                            <div style={{ fontSize: 10, color: catColor, fontWeight: 600, marginTop: 2 }}>
+                              = 蛋白{Math.round(calcP)}g · 碳水{Math.round(calcC)}g · {Math.round(calcCal)}kcal
+                            </div>
+                          )}
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: 8 }}>
+                          <input
+                            type="number"
+                            value={foodGrams[food.id] || ""}
+                            onChange={e => setFoodGrams(prev => ({ ...prev, [food.id]: e.target.value }))}
+                            placeholder="0"
+                            min="0"
+                            style={{
+                              width: 55, padding: "6px 6px", borderRadius: 6,
+                              border: `1.5px solid ${active ? catColor : "#E0E0E0"}`,
+                              fontSize: 14, color: "#1A1A1A", outline: "none",
+                              textAlign: "right", boxSizing: "border-box",
+                            }}
+                          />
+                          <span style={{ fontSize: 11, color: "#9E9E9E" }}>{unit}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div style={{ borderTop: "1px solid #333", paddingTop: 10, fontSize: 12 }}>
-                  <div style={{ color: "white", marginBottom: 3 }}>🥩 {selP.name} {selP.amount}</div>
-                  <div style={{ color: "white", marginBottom: 3 }}>🍚 {selC.name} {selC.amount}</div>
-                  {selV.length > 0 && <div style={{ color: "white", marginBottom: 3 }}>🥦 {selV.map(v => v.name).join("、")}</div>}
-                  <div style={{ color: "white" }}>🫙 椰子油 1汤匙</div>
+              );
+            })}
+
+            {/* 营养汇总 */}
+            {hasFood && (() => {
+              const n = calcNutrition();
+              return (
+                <div style={{
+                  background: "linear-gradient(135deg, #1A1A1A, #2D2D2D)",
+                  borderRadius: 13, padding: "14px", marginBottom: 12, color: "white",
+                }}>
+                  <div style={{ fontSize: 12, color: "#757575", marginBottom: 10 }}>本餐营养汇总</div>
+                  <div style={{ display: "flex", gap: 10 }}>
+                    {[
+                      { label: "蛋白质", value: `${n.protein}g`, color: "#81C784" },
+                      { label: "碳水", value: `${n.carb}g`, color: "#64B5F6" },
+                      { label: "脂肪", value: `${n.fat}g`, color: "#FFB74D" },
+                      { label: "热量", value: `${n.cal}`, color: "#F48FB1" },
+                    ].map(item => (
+                      <div key={item.label} style={{ flex: 1, textAlign: "center" }}>
+                        <div style={{ fontSize: 16, fontWeight: 800, color: item.color }}>{item.value}</div>
+                        <div style={{ fontSize: 10, color: "#616161", marginTop: 2 }}>{item.label}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
 
             <button onClick={save} disabled={!canSave} style={{
               width: "100%", padding: "13px", borderRadius: 11, border: "none",
@@ -848,7 +902,7 @@ function MealModule({ records, setRecords, fitnessLogs }) {
               color: canSave ? "white" : "#9E9E9E",
               fontSize: 14, fontWeight: 700, cursor: canSave ? "pointer" : "not-allowed", transition: "all 0.2s",
             }}>
-              {canSave ? "记录这餐 →" : "请先选择蛋白质 + 碳水"}
+              {canSave ? "记录这餐 →" : "请填写至少一种食材"}
             </button>
             </>)}
           </>
@@ -1061,17 +1115,17 @@ function MealModule({ records, setRecords, fitnessLogs }) {
 }
 
 // ─── NAV ICONS ───────────────────────────────────────────────────
-function IconFitness({ active }) {
+function IconFitness({ active, color }) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? "white" : "#616161"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color || (active ? "white" : "#616161")} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6.5 6.5h11M6.5 17.5h11M4 12h16M2 9l2 3-2 3M22 9l-2 3 2 3" />
     </svg>
   );
 }
 
-function IconMeal({ active }) {
+function IconMeal({ active, color }) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? "white" : "#616161"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color || (active ? "white" : "#616161")} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7" />
     </svg>
   );
@@ -1083,14 +1137,59 @@ function initChecks() {
 }
 
 export default function App() {
+  const todayKey = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  };
+
   const [module, setModule] = useState("fitness");
-  const [checks, setChecks] = useState(initChecks);
+  const [checks, setChecks] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("ht_checks"));
+      return saved || initChecks();
+    } catch { return initChecks(); }
+  });
   const [records, setRecords] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("ht_records")) || []; } catch { return []; }
+    try {
+      const savedDate = localStorage.getItem("ht_date");
+      if (savedDate !== todayKey()) return [];
+      return JSON.parse(localStorage.getItem("ht_records")) || [];
+    } catch { return []; }
   });
   const [fitnessLogs, setFitnessLogs] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("ht_fitlogs")) || []; } catch { return []; }
+    try {
+      const savedDate = localStorage.getItem("ht_date");
+      if (savedDate !== todayKey()) return [];
+      return JSON.parse(localStorage.getItem("ht_fitlogs")) || [];
+    } catch { return []; }
   });
+
+  // Save today's date key
+  useEffect(() => {
+    localStorage.setItem("ht_date", todayKey());
+  }, []);
+
+  // Auto-reset at midnight
+  useEffect(() => {
+    const checkMidnight = () => {
+      const savedDate = localStorage.getItem("ht_date");
+      if (savedDate && savedDate !== todayKey()) {
+        setRecords([]);
+        setFitnessLogs([]);
+        localStorage.setItem("ht_date", todayKey());
+        localStorage.removeItem("ht_records");
+        localStorage.removeItem("ht_fitlogs");
+        localStorage.removeItem("ht_feeling");
+        localStorage.removeItem("ht_weight");
+      }
+    };
+    const interval = setInterval(checkMidnight, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    try { localStorage.setItem("ht_checks", JSON.stringify(checks)); } catch {}
+  }, [checks]);
 
   useEffect(() => {
     try { localStorage.setItem("ht_records", JSON.stringify(records)); } catch {}
@@ -1132,9 +1231,9 @@ export default function App() {
         zIndex: 20,
       }}>
         {[
-          { id: "fitness", label: "训练", badge: `${doneAll}/${totalAll}`, Icon: IconFitness },
-          { id: "meal", label: "饮食", badge: `${todayP}g`, Icon: IconMeal },
-        ].map(({ id, label, badge, Icon }) => {
+          { id: "fitness", label: "训练", badge: `${doneAll}/${totalAll}`, Icon: IconFitness, activeColor: "#FF6D00", iconActiveColor: "#FF6D00" },
+          { id: "meal", label: "饮食", badge: `${todayP}g`, Icon: IconMeal, activeColor: "#69F0AE", iconActiveColor: "#69F0AE" },
+        ].map(({ id, label, badge, Icon, activeColor, iconActiveColor }) => {
           const active = module === id;
           return (
             <button key={id} onClick={() => setModule(id)} style={{
@@ -1142,11 +1241,11 @@ export default function App() {
               cursor: "pointer", display: "flex", flexDirection: "column",
               alignItems: "center", gap: 3,
             }}>
-              <Icon active={active} />
-              <span style={{ fontSize: 11, color: active ? "white" : "#616161", fontWeight: active ? 700 : 400 }}>
+              <Icon active={active} color={active ? iconActiveColor : "#616161"} />
+              <span style={{ fontSize: 11, color: active ? activeColor : "#616161", fontWeight: active ? 700 : 400 }}>
                 {label}
               </span>
-              <span style={{ fontSize: 10, color: active ? "#9E9E9E" : "#424242" }}>{badge}</span>
+              <span style={{ fontSize: 10, color: active ? activeColor : "#424242", opacity: active ? 0.7 : 1 }}>{badge}</span>
             </button>
           );
         })}
